@@ -38,14 +38,11 @@ const schedules = {
 };
 
 async function storeData() {
-  // // Store participants as hashes
-  // for (const id in participants) {
-  //   // await redis.hset(`participant:${id}`, participants[id]);
+  for (const id in participants) {
+    await redis.hset(`participant:${id}`, participants[id]);
+    await redis.sadd("participant_ids", id);
+  }
 
-  //   await redis.sadd("participant_ids", id);
-  // }
-
-  // Store availability
   for (const id in participantAvailability) {
     for (const day in participantAvailability[id]) {
       await redis.set(
@@ -55,7 +52,6 @@ async function storeData() {
     }
   }
 
-  // Store schedules
   for (const id in schedules) {
     for (const date in schedules[id]) {
       await redis.set(
