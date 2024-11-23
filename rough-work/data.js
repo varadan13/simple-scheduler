@@ -37,3 +37,7 @@ const schedules = {
     "29/10/2024": [{ start: "09:00", end: "10:30" }],
   },
 };
+
+const data = { participants, participantAvailability, schedules };
+
+export default data;

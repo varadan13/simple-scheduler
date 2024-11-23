@@ -3,7 +3,7 @@ const timeToMinutes = (time) => {
   return hours * 60 + minutes;
 };
 
-const transformSelectedSlots = (selectedSlots) => {
+export const transformSelectedSlots = (selectedSlots) => {
   const temp = [];
   selectedSlots.forEach((slots) => {
     temp.push(
@@ -32,10 +32,12 @@ const getSlots = (transformedSlots) => {
   return temp;
 };
 
-const shldComputeOverlappingSlots = (numberOfExistingSchedule, threshold) =>
-  numberOfExistingSchedule.every((ele, idx) => ele < threshold[idx]);
+export const getShldComputeOverlappingSlots = (
+  numberOfExistingSchedule,
+  threshold
+) => numberOfExistingSchedule.every((ele, idx) => ele < threshold[idx]);
 
-const findOverlappingSlots = (slots) => {
+export const findOverlappingSlots = (slots) => {
   for (let i = 0; i < slots.length; i++) {
     slots[i].sort((a, b) => a[0] - b[0]);
   }
