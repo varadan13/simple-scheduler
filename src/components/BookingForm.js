@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import safeJsonParse from "@/utils/safeJsonParse";
-
+import checkParticipantAvailableSlots from "@/utils/checkParticipantAvailableSlots";
 import FormUI from "./FormUI";
 
 const BookingForm = ({ participantsList }) => {
@@ -58,7 +58,12 @@ const BookingForm = ({ participantsList }) => {
 
   console.log({ selectedParticipants, startDate, endDate });
 
-  const checkSlots = () => {};
+  const checkSlots = async () => {
+    const res = await checkParticipantAvailableSlots({
+      selectedParticipants,
+      date_range: { start: startDate, end: endDate },
+    });
+  };
 
   return (
     <>

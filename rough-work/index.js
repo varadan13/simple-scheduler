@@ -8,7 +8,7 @@ import {
 
 const selectedIds = [1, 2, 3];
 
-const selectedData = "28/10/2024";
+const selectedDate = "28/10/2024";
 
 const selectedDay = "Monday"; // use lib
 
@@ -25,7 +25,7 @@ const getParticipantsAvailabilitySlots = () => {
 const getParticipantsSchedules = () => {
   const { schedules } = data;
   return selectedIds
-    .map((id) => (schedules[id] ?? {})[selectedData])
+    .map((id) => (schedules[id] ?? {})[selectedDate])
     .filter((sch) => !!sch)
     .flat(1)
     .map((sch) => [timeToMinutes(sch.start), timeToMinutes(sch.end)]);
@@ -34,7 +34,7 @@ const getParticipantsSchedules = () => {
 const getParticipantsScheduleCount = () => {
   const { schedules } = data;
   return selectedIds
-    .map((id) => (schedules[id] ?? {})[selectedData])
+    .map((id) => (schedules[id] ?? {})[selectedDate])
     .map((sch) => (sch ? sch.length : 0));
 };
 
