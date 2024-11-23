@@ -3,6 +3,7 @@ import {
   getShldComputeOverlappingSlots,
   transformSelectedSlots,
   findOverlappingSlots,
+  timeToMinutes,
 } from "./utils.js";
 
 const selectedIds = [1, 2, 3];
@@ -26,7 +27,8 @@ const getParticipantsSchedules = () => {
   return selectedIds
     .map((id) => (schedules[id] ?? {})[selectedData])
     .filter((sch) => !!sch)
-    .flat(1);
+    .flat(1)
+    .map((sch) => [timeToMinutes(sch.start), timeToMinutes(sch.end)]);
 };
 
 const getParticipantsScheduleCount = () => {
@@ -49,7 +51,8 @@ const shldComputeOverlappingSlots = getShldComputeOverlappingSlots(
 const index = () => {
   if (shldComputeOverlappingSlots) {
     const overlappingSlots = findOverlappingSlots(
-      transformSelectedSlots(participantsAvailabilitySlots)
+      transformSelectedSlots(participantsAvailabilitySlots),
+      participantsSchedules
     );
     console.log(overlappingSlots);
   }

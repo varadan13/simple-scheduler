@@ -1,4 +1,4 @@
-const timeToMinutes = (time) => {
+export const timeToMinutes = (time) => {
   const [hours, minutes] = time.split(":").map(Number);
   return hours * 60 + minutes;
 };
@@ -37,7 +37,27 @@ export const getShldComputeOverlappingSlots = (
   threshold
 ) => numberOfExistingSchedule.every((ele, idx) => ele < threshold[idx]);
 
-export const findOverlappingSlots = (slots) => {
+function generateHalfHourIntervals(timeSlots) {
+  const intervals = [];
+
+  timeSlots.forEach((slot) => {
+    const startTime = new Date(`1970-01-01T${slot[0]}:00`);
+    const endTime = new Date(`1970-01-01T${slot[1]}:00`);
+
+    while (startTime < endTime) {
+      const nextTime = new Date(startTime.getTime() + 30 * 60000);
+      intervals.push([
+        startTime.toTimeString().slice(0, 5),
+        nextTime.toTimeString().slice(0, 5),
+      ]);
+      startTime.setTime(nextTime.getTime());
+    }
+  });
+
+  return intervals;
+}
+
+export const findOverlappingSlots = (slots, existingSchedules) => {
   for (let i = 0; i < slots.length; i++) {
     slots[i].sort((a, b) => a[0] - b[0]);
   }
@@ -56,7 +76,11 @@ export const findOverlappingSlots = (slots) => {
     const end = Math.min(...currentSlots.map((slot) => slot[1]));
 
     if (start < end) {
-      temp.push([start, end]);
+      if (existingSchedules.some((eSch) => eSch[0] > start && eSch[1] < end)) {
+        // pass
+      } else {
+        temp.push([start, end]);
+      }
     }
 
     let minEndIndex = currentSlots.reduce((minIndex, slot, index) => {
@@ -69,22 +93,7 @@ export const findOverlappingSlots = (slots) => {
     pointers[minEndIndex]++;
   }
 
-  return temp.map((slt) => ({
-    start: minutesToTime(slt[0]),
-    end: minutesToTime(slt[1]),
-  }));
+  return generateHalfHourIntervals(
+    temp.map((slt) => [minutesToTime(slt[0]), minutesToTime(slt[1])])
+  );
 };
-
-// func that handles threshold complexity
-
-// func to break it down into half an hour slot
-
-const scheduleArray = [
-  [
-    { start: "09:30", end: "10:30" },
-    {
-      start: "15:00",
-      end: "16:30",
-    },
-  ],
-];
