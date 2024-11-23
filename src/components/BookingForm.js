@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -12,6 +12,9 @@ const BookingForm = ({ participantsList }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [loading, setLoading] = useState(false);
+  const [slots, setSlots] = useState(null);
 
   const createQueryString = useCallback(
     (name, value) => {
@@ -56,13 +59,15 @@ const BookingForm = ({ participantsList }) => {
     router.push(pathname + "?" + createQueryString("endDate", value));
   };
 
-  console.log({ selectedParticipants, startDate, endDate });
-
   const checkSlots = async () => {
+    setLoading(true);
+    setSlots(null);
     const res = await checkParticipantAvailableSlots({
       selectedParticipants,
       date_range: { start: startDate, end: endDate },
     });
+    setSlots(res);
+    setLoading(false);
   };
 
   return (
@@ -76,7 +81,30 @@ const BookingForm = ({ participantsList }) => {
         endDate={endDate}
         setEndDate={setEndDate}
         checkSlots={checkSlots}
+        loading={loading}
       />
+      {slots && (
+        <>
+          <div className="m-6" />
+          <p className="text-center text-black">Available Slots</p>
+          <div className="max-w-md m-auto p-6 bg-white rounded-lg shadow-md">
+            {Object.keys(slots).map((ele1) => (
+              <div key={ele1}>
+                <p className="font-medium text-black">{ele1}:</p>
+                <div>
+                  {slots[ele1].map((ele2) => (
+                    <button
+                      key={ele2}
+                      className="m-4 text-xs bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                      {`${ele2[0]}-${ele2[1]}`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 };
