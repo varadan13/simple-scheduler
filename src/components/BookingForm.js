@@ -8,15 +8,7 @@ import safeJsonParse from "@/utils/safeJsonParse";
 
 import FormUI from "./FormUI";
 
-const participantsList = [
-  { value: "Alice", label: "Alice" },
-  { value: "Bob", label: "Bob" },
-  { value: "Charlie", label: "Charlie" },
-  { value: "David", label: "David" },
-  { value: "Eve", label: "Eve" },
-];
-
-const BookingForm = () => {
+const BookingForm = ({ participantsList }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -63,6 +55,8 @@ const BookingForm = () => {
   const setEndDate = (value) => {
     router.push(pathname + "?" + createQueryString("endDate", value));
   };
+
+  console.log({ selectedParticipants, startDate, endDate });
 
   const checkSlots = () => {};
 
